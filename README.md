@@ -1,41 +1,10 @@
-# DemoDataBot
+# Databot and Positron Assistant Workshop
 
-DemoDataBot will create a synthetic data set optimized for EDA, visualization, and web app development. For more information about the data, please view the `CLAUDE.md` and `.claude/PLAN.md` files.
-
-## Prerequisites
-
-Demobot uses [Claude Code](https://www.anthropic.com/claude-code) to generate projects. To run Demobot, you need:
-
-1.  **Node.js** - Required to run Claude Code (comes with `npx`)
-2.  **Anthropic API Key** - Set the `ANTHROPIC_API_KEY` environment variable with your API key
-
-## Usage
-
-### Quick Start
-
-1.  Open a terminal in this directory
-
-2.  Start demobot by running Claude Code:
-
-    ``` bash
-    npx @anthropic-ai/claude-code
-    ```
-
-3.  Tell it to create a demo project for your customer:
-
-    ```         
-    > Create data for [Company Name].
-    ```
-
-4.  Answer the setup questions. If there are certain prompts that you don't know the answer to, you can call them out as "unknown" or "unsure" and Demobot will research them for you.
-
-5.  Occasionally, Demobot may ask for confirmation or additional details. Respond as needed.
+Welcome to the Databot and Positron Assistant Workshop! This repository contains 19 synthetic datasets across key industry verticals, specifically designed to demonstrate the data cleaning, analysis, and visualization capabilities of Positron and Databot.
 
 ## Available Datasets
 
 The following 19 synthetic datasets have been generated for demonstration purposes across key industry verticals. Each dataset contains exactly 5 columns with 400-500 rows and includes intentional data quality issues (less than 1% of values) to showcase data cleaning and validation capabilities.
-
-### Core Business Sectors
 
 #### **`pharma/`** - Pharmaceutical Research Data
 - `data.csv` - Clinical trial and drug research data (450 rows)
@@ -79,8 +48,6 @@ The following 19 synthetic datasets have been generated for demonstration purpos
 - **Data Quality Issues**: Negative project durations (impossible values)
 - **Demo Scenarios**: Duration validation, budget analysis, client satisfaction tracking
 
-### Industry & Manufacturing
-
 #### **`manufacturing/`** - Production Metrics Data
 - `data.csv` - Manufacturing performance and quality control (455 rows)
 - Columns: batch_id, product_line, production_volume, quality_score, defect_rate
@@ -111,8 +78,6 @@ The following 19 synthetic datasets have been generated for demonstration purpos
 - **Data Quality Issues**: Negative latency (impossible values)
 - **Demo Scenarios**: Latency validation, bandwidth analysis, service quality monitoring
 
-### Consumer & Services
-
 #### **`retail/`** - Sales and Inventory Data
 - `data.csv` - Retail performance and customer insights (440 rows)
 - Columns: product_id, category, units_sold, unit_price, customer_rating
@@ -130,8 +95,6 @@ The following 19 synthetic datasets have been generated for demonstration purpos
 - Columns: athlete_id, sport, performance_score, training_hours, competition_level
 - **Data Quality Issues**: Negative training hours (impossible values)
 - **Demo Scenarios**: Training validation, performance analysis, competition level tracking
-
-### Public & Academic
 
 #### **`government/`** - Municipal Services Data
 - `data.csv` - Public services and budget allocation (415 rows)
@@ -151,8 +114,6 @@ The following 19 synthetic datasets have been generated for demonstration purpos
 - **Data Quality Issues**: Negative pollution indices (impossible values)
 - **Demo Scenarios**: Pollution validation, environmental analysis, compliance monitoring
 
-### Special Demo Dataset
-
 #### **`posit-demo/`** - R/Python Package Downloads
 - `data.csv` - Package download analytics and version tracking (450 rows)
 - Columns: package_name, download_date, daily_downloads, package_type, user_rating
@@ -168,9 +129,3 @@ The following 19 synthetic datasets have been generated for demonstration purpos
 - **Demo-ready**: Clear trends for visualization and analysis
 - **Quality-focused**: Each contains obvious data quality issues for cleaning demonstrations
 - **Synthetic**: No real names, companies, or sensitive information
-
-**Perfect for showcasing:**
-- Positron's data cleaning and validation capabilities
-- Databot's data quality detection
-- Interactive data visualization and analysis
-- Real-world data processing workflows
