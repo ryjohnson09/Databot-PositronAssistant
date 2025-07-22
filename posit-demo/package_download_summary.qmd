@@ -1,0 +1,210 @@
+---
+title: "R/Python Package Download Analysis"
+subtitle: "Posit Demo Dataset Summary"
+author: "Generated for Demonstration Purposes"
+date: today
+format: 
+  html:
+    toc: true
+    code-fold: true
+    theme: cosmo
+execute:
+  warning: false
+  message: false
+---
+
+## Overview
+
+This report analyzes synthetic R and Python package download data, demonstrating typical data analysis workflows and highlighting data quality issues that require attention.
+
+**Note: This dataset is completely synthetic and generated for demonstration purposes.**
+
+## Data Loading and Initial Exploration
+
+```{r setup}
+library(tidyverse)
+library(plotly)
+library(DT)
+library(lubridate)
+
+# Load the data
+downloads <- read_csv("data.csv")
+
+# Display basic information
+cat("Dataset dimensions:", nrow(downloads), "rows ×", ncol(downloads), "columns\n")
+```
+
+### Dataset Structure
+
+```{r structure}
+# Display structure and summary
+glimpse(downloads)
+```
+
+```{r summary-table}
+# Create a nice summary table
+downloads %>%
+  summary() %>%
+  knitr::kable(caption = "Dataset Summary Statistics")
+```
+
+## Data Quality Issues 🚨
+
+Let's identify the obvious data quality problems in this dataset:
+
+### Negative Download Counts
+
+```{r negative-downloads}
+negative_downloads <- downloads %>%
+  filter(daily_downloads < 0)
+
+cat("Found", nrow(negative_downloads), "records with negative download counts:\n")
+
+negative_downloads %>%
+  arrange(daily_downloads) %>%
+  head(10) %>%
+  datatable(caption = "Records with Negative Downloads") %>%
+  formatStyle("daily_downloads", 
+              backgroundColor = styleInterval(0, c("lightcoral", "white")))
+```
+
+### Extreme Outliers
+
+```{r extreme-outliers}
+# Identify extremely high download counts (likely errors)
+outliers <- downloads %>%
+  filter(daily_downloads > 1000000)  # More than 1 million downloads per day
+
+cat("Found", nrow(outliers), "records with suspiciously high download counts:\n")
+
+outliers %>%
+  arrange(desc(daily_downloads)) %>%
+  datatable(caption = "Records with Extreme Download Counts") %>%
+  formatStyle("daily_downloads",
+              backgroundColor = styleInterval(1000000, c("white", "orange")))
+```
+
+### Zero Downloads for Popular Packages
+
+```{r zero-downloads}
+popular_packages <- c("ggplot2", "pandas", "numpy", "tidyverse", "matplotlib")
+
+zero_popular <- downloads %>%
+  filter(package_name %in% popular_packages & daily_downloads == 0)
+
+cat("Found", nrow(zero_popular), "records where popular packages have zero downloads:\n")
+
+zero_popular %>%
+  datatable(caption = "Popular Packages with Zero Downloads") %>%
+  formatStyle("daily_downloads",
+              backgroundColor = styleInterval(0.5, c("lightyellow", "white")))
+```
+
+## Visualization Analysis
+
+### Download Trends Over Time
+
+```{r downloads-over-time}
+# Clean data for visualization (remove obvious errors)
+clean_downloads <- downloads %>%
+  filter(daily_downloads >= 0 & daily_downloads <= 100000)
+
+monthly_trends <- clean_downloads %>%
+  mutate(month = floor_date(download_date, "month")) %>%
+  group_by(month, package_type) %>%
+  summarise(avg_downloads = mean(daily_downloads, na.rm = TRUE), .groups = "drop")
+
+p1 <- ggplot(monthly_trends, aes(x = month, y = avg_downloads, color = package_type)) +
+  geom_line(size = 1.2) +
+  geom_point(size = 2) +
+  labs(
+    title = "Average Monthly Downloads by Package Type",
+    subtitle = "Data cleaned to remove obvious errors",
+    x = "Month",
+    y = "Average Daily Downloads",
+    color = "Package Type"
+  ) +
+  theme_minimal() +
+  scale_y_continuous(labels = scales::comma_format())
+
+ggplotly(p1)
+```
+
+### Package Type Distribution
+
+```{r package-distribution}
+package_summary <- clean_downloads %>%
+  group_by(package_type) %>%
+  summarise(
+    count = n(),
+    avg_downloads = round(mean(daily_downloads)),
+    median_downloads = median(daily_downloads),
+    total_downloads = sum(daily_downloads),
+    .groups = "drop"
+  )
+
+package_summary %>%
+  datatable(caption = "Package Type Summary (Cleaned Data)") %>%
+  formatCurrency(c("avg_downloads", "median_downloads", "total_downloads"), 
+                  currency = "", digits = 0)
+```
+
+### Top Packages by Downloads
+
+```{r top-packages}
+top_packages <- clean_downloads %>%
+  group_by(package_name, package_type) %>%
+  summarise(
+    total_downloads = sum(daily_downloads),
+    avg_rating = round(mean(user_rating), 1),
+    .groups = "drop"
+  ) %>%
+  arrange(desc(total_downloads)) %>%
+  head(15)
+
+p2 <- ggplot(top_packages, aes(x = reorder(package_name, total_downloads), 
+                               y = total_downloads, 
+                               fill = package_type)) +
+  geom_col() +
+  coord_flip() +
+  labs(
+    title = "Top 15 Packages by Total Downloads",
+    subtitle = "Based on cleaned data",
+    x = "Package Name",
+    y = "Total Downloads",
+    fill = "Package Type"
+  ) +
+  theme_minimal() +
+  scale_y_continuous(labels = scales::comma_format())
+
+ggplotly(p2)
+```
+
+## Data Cleaning Recommendations
+
+Based on this analysis, the following data cleaning steps are recommended:
+
+1. **Remove or investigate negative download counts** - These are impossible and likely data entry errors
+2. **Cap or investigate extreme outliers** - Downloads > 1M per day for individual packages seem unrealistic
+3. **Investigate zero downloads for popular packages** - May indicate missing data or system issues
+4. **Validate data collection processes** - To prevent similar issues in future datasets
+
+## Interactive Data Explorer
+
+```{r interactive-table}
+downloads %>%
+  datatable(
+    caption = "Complete Dataset (Including Errors for Demo)",
+    filter = "top",
+    options = list(pageLength = 25, scrollX = TRUE)
+  ) %>%
+  formatStyle(
+    "daily_downloads",
+    backgroundColor = styleInterval(c(0, 100000), 
+                                   c("lightcoral", "white", "orange"))
+  )
+```
+
+---
+
+*This report demonstrates typical data quality issues and analysis workflows using synthetic data generated for Posit demonstrations.*
